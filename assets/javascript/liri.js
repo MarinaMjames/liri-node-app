@@ -3,81 +3,63 @@ var fs = require('fs');
 //twitter npm 
 var twitter = require('twitter');
 //spotify npm
-var spotify = require('spotify');
+var Spotify = require('node-spotify-api');
 // OMDB request for API 
 var request = require('request');
 // my-tweets, spotify-this, movie-this 
 var command = process.argv[2];
-// song or movie title
 
-//OMDB API Key
-// var omdbKey = "2e1b7625"; 
-var omdbKey = "40e9cece";
 // Getting Twitter Keys from keys.js file 
 var twitterKeys = fs.readFile('keys.js', 'utf8', (err, data) =>{
 	if(err) throw err;
-	// console.log(data);
-	// var twitterKeys = data.split(',');
-	// for (var i = 0; i < twitterKeys.length; i++){
-		// console.log(twitterKeys[i]);
-
-	// }
 });
 var twitterKey = require('./keys');
-// console.log()
-// console.log(twitterKey);
-// console.log(twitterKey.twitterKeys);
+
 
 // Twitter
 if (command === 'my-tweets'){
-
+	// twitter keys stored in variable named client
 	var client = new twitter(
-twitterKey.twitterKeys
-);
-
-	console.log("List of 20 most recent tweets here!");
+		twitterKey.twitterKeys
+	);
+	// 
 	var twitterSearch = {screen_name: 'marinamjames'};
 	client.get('statuses/user_timeline', twitterSearch, function(error, tweets, response) {
   if (error) {
     console.log(error);
   }
-
-  console.log(tweets);
+ 	
+ 	console.log(tweets);
+  
 });
 }
 
 // Spotify 
-if (command === 'spotify-this'){
-
-//  console.log(inputSearch);
-// spotify.search({ type: 'track', query: 'dancing in the moonlight' }, function(err, data) {
-//     if ( err ) {
-//         console.log('Error occurred: ' + err);
-//         return;
-//     }
+if (command === 'spotify-this-song'){
+	// song title
+	var songSearch = process.argv[3];
+	var spotify = new Spotify({
+  		id: 'f0fb8ac4076c4990ba4a911fcb4452e0',
+ 		secret: 'c45d2b83504e4efb81bb56f240bfb87b'
+	});
  
-//     console.log(data); 
-
-// function getSpotify() {
-        
-        var artist = process.argv[3];
-        // Running an initial search to identify the artist's unique Spotify id
-        var queryURL = "https://api.spotify.com/v1/search?q=" + artist + "&type=artist&limit=1";
-        $.ajax({
-            url: queryURL,
-            method: "GET"
-        }).done(function(response) {
-        	console.log(response);
-        });
-    // };
-// });
-
+	spotify.search({ type: 'track', query: songSearch }, function(err, data) {
+  		if (err) {
+    	return console.log('Error occurred: ' + err);
+  	}
+console.log('The Artist: ' + data.tracks.items[0].album.artists[0].name);
+console.log('Song Title: ' + data.tracks.items[0].name);
+console.log('Preview the Song: ' + data.tracks.items[0].preview_url);
+console.log('The Album: ' + data.tracks.items[0].album.name);
+});
 }
 
 // OMDB
 
 if (command === 'movie-this'){
-
+//OMDB API Key
+var omdbKey = "40e9cece";
+//Movie title
 	var inputSearch = process.argv[3];
 request('http://www.omdbapi.com/?apikey=' + omdbKey + '&t=' + inputSearch, function (error, response, body) {
 	console.log('error:', error); // Print the error if one occurred 
@@ -85,3 +67,5 @@ request('http://www.omdbapi.com/?apikey=' + omdbKey + '&t=' + inputSearch, funct
 	console.log('body:', body); // Print the HTML for the Google homepage. 
 });
 };
+
+
