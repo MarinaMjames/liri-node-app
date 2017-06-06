@@ -28,9 +28,12 @@ if (command === 'my-tweets'){
   if (error) {
     console.log(error);
   }
- 	
- 	console.log(tweets);
-  
+ 	for (var i = 2; i < tweets.length; i++ ){
+ 		// console.log(tweets);
+ 		 console.log(tweets[i].created_at);
+ 		console.log(tweets[i].text);
+ 	}
+ 	// console.log(tweets);
 });
 }
 
@@ -61,11 +64,17 @@ if (command === 'movie-this'){
 var omdbKey = "40e9cece";
 //Movie title
 	var inputSearch = process.argv[3];
-request('http://www.omdbapi.com/?apikey=' + omdbKey + '&t=' + inputSearch, function (error, response, body) {
-	console.log('error:', error); // Print the error if one occurred 
-	console.log('statusCode:', response); // Print the response status code if a response was received 
-	console.log('body:', body); // Print the HTML for the Google homepage. 
+	request('http://www.omdbapi.com/?apikey=' + omdbKey + '&t=' + inputSearch, function (error, response, body) {
+		// console.log('error:', error); // Print the error if one occurred 
+		// console.log('statusCode:', response); // Print the response status code if a response was received 
+		// console.log('body:', body); // Print the HTML for the Google homepage. 
+		console.log(JSON.stringify(body));
+		var response = body.split(",");
+		console.log(response);
+		console.log(response[0].Title)
 });
 };
 
-
+if (command === 'do-what-it-says'){
+	// var 
+}
